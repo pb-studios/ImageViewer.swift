@@ -2,11 +2,10 @@ import UIKit
 
 public protocol ImageDataSource: AnyObject {
     func numberOfImages() -> Int
-    func imageItem(at index:Int) -> ImageItem
+    func imageItem(at index: Int) -> ImageItem
 }
 
-public class ImageCarouselViewController:UIPageViewController, ImageViewerTransitionViewControllerConvertible {
-    
+public class ImageCarouselViewController: UIPageViewController, ImageViewerTransitionViewControllerConvertible {
     unowned var initialSourceView: UIImageView?
     var sourceView: UIImageView? {
         guard let vc = viewControllers?.first as? ImageViewerController else {
@@ -22,12 +21,12 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         return vc.imageView
     }
     
-    weak var imageDatasource:ImageDataSource?
-    let imageLoader:ImageLoader
+    weak var imageDatasource: ImageDataSource?
+    let imageLoader: ImageLoader
  
     var initialIndex = 0
     
-    var theme:ImageViewerTheme = .light {
+    var theme: ImageViewerTheme = .light {
         didSet {
             navItem.leftBarButtonItem?.tintColor = theme.tintColor
             backgroundView?.backgroundColor = theme.color
@@ -35,12 +34,12 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }
     
     var imageContentMode: UIView.ContentMode = .scaleAspectFill
-    var options:[ImageViewerOption] = []
+    var options: [ImageViewerOption] = []
     
-    private var onRightNavBarTapped:((Int) -> Void)?
+    private var onRightNavBarTapped: ((Int) -> Void)?
     private var onCTAButtonTapped: ((Int) -> Void)?
     
-    private(set) lazy var navBar:UINavigationBar = {
+    private(set) lazy var navBar: UINavigationBar = {
         let _navBar = UINavigationBar(frame: .zero)
         _navBar.isTranslucent = true
         _navBar.setBackgroundImage(UIImage(), for: .default)
@@ -48,7 +47,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         return _navBar
     }()
     
-    private(set) lazy var backgroundView:UIView? = {
+    private(set) lazy var backgroundView: UIView? = {
         let _v = UIView()
         _v.backgroundColor = theme.color
         _v.alpha = 1.0
@@ -61,12 +60,11 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     private let imageViewerPresentationDelegate: ImageViewerTransitionPresentationManager
     
     public init(
-        sourceView:UIImageView,
+        sourceView: UIImageView,
         imageDataSource: ImageDataSource?,
         imageLoader: ImageLoader,
-        options:[ImageViewerOption] = [],
-        initialIndex:Int = 0) {
-        
+        options: [ImageViewerOption] = [],
+        initialIndex: Int = 0) {
         self.initialSourceView = sourceView
         self.initialIndex = initialIndex
         self.options = options
@@ -83,7 +81,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
                 break
             }
         }
-        imageContentMode = _imageContentMode
+        self.imageContentMode = _imageContentMode
         
         self.imageViewerPresentationDelegate = ImageViewerTransitionPresentationManager(imageContentMode: imageContentMode)
         super.init(
@@ -96,6 +94,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         modalPresentationCapturesStatusBarAppearance = true
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -154,33 +153,32 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }
     
     private func applyOptions() {
-        
         options.forEach {
             switch $0 {
-                case .theme(let theme):
-                    self.theme = theme
-                case .contentMode(let contentMode):
-                    self.imageContentMode = contentMode
-                case .closeIcon(let icon):
-                    navItem.leftBarButtonItem?.image = icon
-                case .rightNavItemTitle(let title, let onTap):
-                    navItem.rightBarButtonItem = UIBarButtonItem(
-                        title: title,
-                        style: .plain,
-                        target: self,
-                        action: #selector(diTapRightNavBarItem(_:)))
-                    onRightNavBarTapped = onTap
-                case .rightNavItemIcon(let icon, let onTap):
-                    navItem.rightBarButtonItem = UIBarButtonItem(
-                        image: icon,
-                        style: .plain,
-                        target: self,
-                        action: #selector(diTapRightNavBarItem(_:)))
-                    onRightNavBarTapped = onTap
-                case .ctaButton(let title, let onTap):
-                    setCTAButtonTitle(title)
-                    addCTAButtonToView()
-                    onCTAButtonTapped = onTap
+            case .theme(let theme):
+                self.theme = theme
+            case .contentMode(let contentMode):
+                self.imageContentMode = contentMode
+            case .closeIcon(let icon):
+                navItem.leftBarButtonItem?.image = icon
+            case .rightNavItemTitle(let title, let onTap):
+                navItem.rightBarButtonItem = UIBarButtonItem(
+                    title: title,
+                    style: .plain,
+                    target: self,
+                    action: #selector(diTapRightNavBarItem(_:)))
+                onRightNavBarTapped = onTap
+            case .rightNavItemIcon(let icon, let onTap):
+                navItem.rightBarButtonItem = UIBarButtonItem(
+                    image: icon,
+                    style: .plain,
+                    target: self,
+                    action: #selector(diTapRightNavBarItem(_:)))
+                onRightNavBarTapped = onTap
+            case .ctaButton(let title, let onTap):
+                setCTAButtonTitle(title)
+                addCTAButtonToView()
+                onCTAButtonTapped = onTap
             }
         }
     }
@@ -196,7 +194,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         dataSource = self
 
         if let imageDatasource = imageDatasource {
-            let initialVC:ImageViewerController = .init(
+            let initialVC: ImageViewerController = .init(
                 index: initialIndex,
                 imageItem: imageDatasource.imageItem(at: initialIndex),
                 imageLoader: imageLoader)
@@ -205,8 +203,8 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }
 
     @objc
-    private func dismiss(_ sender:UIBarButtonItem) {
-        self.dismiss(animated: true, completion: nil)
+    private func dismiss(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     deinit {
@@ -214,10 +212,10 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }
     
     @objc
-    func diTapRightNavBarItem(_ sender:UIBarButtonItem) {
+    func diTapRightNavBarItem(_ sender: UIBarButtonItem) {
         guard let onTap = onRightNavBarTapped,
-            let _firstVC = viewControllers?.first as? ImageViewerController
-            else { return }
+              let _firstVC = viewControllers?.first as? ImageViewerController
+        else { return }
         onTap(_firstVC.index)
     }
     
@@ -237,32 +235,30 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }
 }
 
-extension ImageCarouselViewController:UIPageViewControllerDataSource {
+extension ImageCarouselViewController: UIPageViewControllerDataSource {
     public func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        
         guard let vc = viewController as? ImageViewerController else { return nil }
         guard let imageDatasource = imageDatasource else { return nil }
         guard vc.index > 0 else { return nil }
  
         let newIndex = vc.index - 1
-        return ImageViewerController.init(
+        return ImageViewerController(
             index: newIndex,
-            imageItem:  imageDatasource.imageItem(at: newIndex),
+            imageItem: imageDatasource.imageItem(at: newIndex),
             imageLoader: vc.imageLoader)
     }
     
     public func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        
         guard let vc = viewController as? ImageViewerController else { return nil }
         guard let imageDatasource = imageDatasource else { return nil }
         guard vc.index <= (imageDatasource.numberOfImages() - 2) else { return nil }
         
         let newIndex = vc.index + 1
-        return ImageViewerController.init(
+        return ImageViewerController(
             index: newIndex,
             imageItem: imageDatasource.imageItem(at: newIndex),
             imageLoader: vc.imageLoader)
