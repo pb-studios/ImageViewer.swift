@@ -138,10 +138,10 @@ public class ImageCarouselViewController: UIPageViewController, ImageViewerTrans
             .constraint(equalTo: view.leadingAnchor, constant: 40)
             .isActive = true
         ctaButton.trailingAnchor
-            .constraint(equalTo: view.trailingAnchor, constant: 40)
+            .constraint(equalTo: view.trailingAnchor, constant: -40)
             .isActive = true
         ctaButton.bottomAnchor
-            .constraint(equalTo: view.bottomAnchor, constant: 40)
+            .constraint(equalTo: view.bottomAnchor, constant: -90)
             .isActive = true
     }
     
