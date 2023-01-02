@@ -38,6 +38,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     var options:[ImageViewerOption] = []
     
     private var onRightNavBarTapped:((Int) -> Void)?
+    private var onCTAButtonTapped: ((Int) -> Void)?
     
     private(set) lazy var navBar:UINavigationBar = {
         let _navBar = UINavigationBar(frame: .zero)
@@ -55,6 +56,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
     }()
     
     private(set) lazy var navItem = UINavigationItem()
+    private(set) lazy var ctaButton = UIButton()
     
     private let imageViewerPresentationDelegate: ImageViewerTransitionPresentationManager
     
@@ -113,6 +115,37 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         navBar.insert(to: view)
     }
     
+    private func prepareCTAButton() {
+        ctaButton.tintColor = .white
+        ctaButton.backgroundColor = .systemBlue
+        ctaButton.layer.cornerRadius = 13
+        ctaButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        ctaButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        ctaButton.setTitleColor(.white, for: .normal)
+        ctaButton.addTarget(self, action: #selector(didTapCTAButton(_:)), for: .touchUpInside)
+    }
+    
+    private func setCTAButtonTitle(_ title: String) {
+        ctaButton.setTitle(title, for: .normal)
+    }
+    
+    private func addCTAButtonToView() {
+        view.addSubview(ctaButton)
+        ctaButton.translatesAutoresizingMaskIntoConstraints = false
+        ctaButton.heightAnchor
+            .constraint(equalToConstant: 55)
+            .isActive = true
+        ctaButton.leadingAnchor
+            .constraint(equalTo: view.leadingAnchor, constant: 40)
+            .isActive = true
+        ctaButton.trailingAnchor
+            .constraint(equalTo: view.trailingAnchor, constant: 40)
+            .isActive = true
+        ctaButton.bottomAnchor
+            .constraint(equalTo: view.bottomAnchor, constant: 40)
+            .isActive = true
+    }
+    
     private func addBackgroundView() {
         guard let backgroundView = backgroundView else { return }
         view.addSubview(backgroundView)
@@ -144,6 +177,10 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
                         target: self,
                         action: #selector(diTapRightNavBarItem(_:)))
                     onRightNavBarTapped = onTap
+                case .ctaButton(let title, let onTap):
+                    setCTAButtonTitle(title)
+                    addCTAButtonToView()
+                    onCTAButtonTapped = onTap
             }
         }
     }
@@ -153,6 +190,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         
         addBackgroundView()
         addNavBar()
+        prepareCTAButton()
         applyOptions()
         
         dataSource = self
@@ -180,6 +218,14 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
         guard let onTap = onRightNavBarTapped,
             let _firstVC = viewControllers?.first as? ImageViewerController
             else { return }
+        onTap(_firstVC.index)
+    }
+    
+    @objc
+    func didTapCTAButton(_ sender: Any) {
+        guard let onTap = onRightNavBarTapped,
+              let _firstVC = viewControllers?.first as? ImageViewerController
+        else { return }
         onTap(_firstVC.index)
     }
     
