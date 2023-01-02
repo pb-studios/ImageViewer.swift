@@ -111,6 +111,7 @@ public class ImageCarouselViewController: UIPageViewController, ImageViewerTrans
         navItem.leftBarButtonItem?.tintColor = theme.tintColor
         navBar.alpha = 0.0
         navBar.items = [navItem]
+        navBar.delegate = self
         navBar.insert(to: view)
     }
     
@@ -262,5 +263,11 @@ extension ImageCarouselViewController: UIPageViewControllerDataSource {
             index: newIndex,
             imageItem: imageDatasource.imageItem(at: newIndex),
             imageLoader: vc.imageLoader)
+    }
+}
+
+extension ImageCarouselViewController: UINavigationBarDelegate {
+    public func position(for bar: UIBarPositioning) -> UIBarPosition {
+        return UIBarPosition.topAttached
     }
 }
