@@ -222,7 +222,7 @@ public class ImageCarouselViewController: UIPageViewController, ImageViewerTrans
     
     @objc
     func didTapCTAButton(_ sender: Any) {
-        guard let onTap = onRightNavBarTapped,
+        guard let onTap = onCTAButtonTapped,
               let _firstVC = viewControllers?.first as? ImageViewerController
         else { return }
         onTap(_firstVC.index)
